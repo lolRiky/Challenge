@@ -1,0 +1,153 @@
+{
+	"info": {
+		"_postman_id": "4e250c8b-4f3d-4680-aad5-0d5f998b38db",
+		"name": "Orious API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "31682866",
+		"_collection_link": "https://orious.postman.co/workspace/Team-Workspace~5b567f8b-bf39-40b4-8a30-211da46ef472/collection/31682866-4e250c8b-4f3d-4680-aad5-0d5f998b38db?action=share&source=collection_link&creator=31682866"
+	},
+	"item": [
+		{
+			"name": "Get notes",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/notes",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"notes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create note",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"title\": \"User can create Title note\",\r\n    \"content\": \"User can create Content note\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/notes",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"notes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Put notes",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const host = pm.environment.get(\"host\")\r",
+							"\r",
+							"let notes = pm.sendRequest({\r",
+							"    url: `${host}/notes`,\r",
+							"    method: \"GET\",\r",
+							"    header: {\r",
+							"        'Content-type': 'application/json',\r",
+							"        'charset': 'utf-8'\r",
+							"    }\r",
+							"}, (err, res) => {\r",
+							"    let notes = res.json()\r",
+							"    pm.environment.set(\"firstnote\", notes[0]['_id'])\r",
+							"})\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"title\": \"User can update notes title\",\r\n    \"content\": \"User can update notes content\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/notes/{{firstnote}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"notes",
+						"{{firstnote}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete note",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const host = pm.environment.get(\"host\")\r",
+							"\r",
+							"let notes = pm.sendRequest({\r",
+							"    url: `${host}/notes`,\r",
+							"    method: \"GET\",\r",
+							"    header: {\r",
+							"        'Content-type': 'application/json',\r",
+							"        'charset': 'utf-8'\r",
+							"    }\r",
+							"}, (err, res) => {\r",
+							"    let notes = res.json()\r",
+							"    pm.environment.set(\"lastnote\", notes[notes.length - 1]['_id'])\r",
+							"})\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/notes/{{lastnote}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"notes",
+						"{{lastnote}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "host",
+			"value": "http://localhost:80"
+		}
+	]
+}
