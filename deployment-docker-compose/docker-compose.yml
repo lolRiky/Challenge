@@ -1,0 +1,28 @@
+services:
+  note-orious:
+    network_mode: host
+    image: node:21-alpine3.17
+    working_dir: /app
+    expose:
+      - "3000"
+    volumes:
+      - .:/app
+    command:
+      - /bin/sh
+      - -c
+      - |
+        echo "MONGO_URI=mongodb://127.0.0.1:27017" > .env
+        npm install
+        node index.js
+
+    depends_on:
+      - note-orious-db
+
+  note-orious-db:
+    network_mode: host
+    image: mongo:7.0.4
+    healthcheck:
+      test: curl http://localhost:27017 || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 5
