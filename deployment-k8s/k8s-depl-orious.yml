@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-orious
+  labels:
+    app: app-orious
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app-orious
+  template:
+    metadata:
+      labels:
+        app: app-orious
+    spec:
+      containers:
+        - name: app-orious
+          image: node:21-alpine3.17
+          workingDir: /app
+          ports:
+            - containerPort: 3000
+          command: ["/bin/sh", "-c"]
+          args: ["echo \"MONGO_URI=mongodb://srv-mongo:27017\" > .env; apk update ; apk add git ; git clone https://github.com/Deepak-png981/Note-Orious ; mv Note-Orious/* . ; rm -rf Note-Orious ; npm install && node index.js"]
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: srv-orious
+spec:
+  selector:
+    app: app-orious
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+      nodePort: 30002
+
